@@ -1,0 +1,7 @@
+data/
+derby.log
+metastore_db/
+.idea/
+project/project/
+project/target/
+target/
