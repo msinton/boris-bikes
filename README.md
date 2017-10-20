@@ -3,6 +3,9 @@ About
 Skeleton scala-based project for the boris-bikes exercises - as part of
 the Scott Logic **Data Engineering Training course**
 
+The boris-bikes dataset consists of route information from
+London’s public bicycle hire scheme (Boris Bikes, Santander Cycles).
+
 Route Analysis
 --------------
 

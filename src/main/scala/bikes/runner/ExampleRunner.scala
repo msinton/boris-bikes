@@ -12,5 +12,5 @@ object ExampleRunner extends App {
 
   RouteAnalysis.firstTenRows(spark)
 
-  spark.close()
+  spark.stop()
 }
