@@ -16,28 +16,28 @@ object ExpectedRouteAnalysisResults {
   )
 
   val expectedMostPopularRoutes = Array(
-    ("Hyde Park Corner, Hyde Park", "Hyde Park Corner, Hyde Park", 15070),
-    ("Black Lion Gate, Kensington Gardens", "Black Lion Gate, Kensington Gardens", 10836),
-    ("Albert Gate, Hyde Park", "Albert Gate, Hyde Park", 8312),
-    ("Speakers' Corner 1, Hyde Park", "Speakers' Corner 1, Hyde Park", 5211),
-    ("Speakers' Corner 2, Hyde Park", "Speakers' Corner 2, Hyde Park", 4965),
-    ("Palace Gate, Kensington Gardens", "Palace Gate, Kensington Gardens", 4561),
-    ("Hyde Park Corner, Hyde Park", "Albert Gate, Hyde Park", 3895),
-    ("Black Lion Gate, Kensington Gardens", "Palace Gate, Kensington Gardens", 3848),
-    ("Palace Gate, Kensington Gardens", "Black Lion Gate, Kensington Gardens", 3407),
-    ("Hyde Park Corner: Hyde Park", "Hyde Park Corner: Hyde Park", 3116)
+    ("Hyde Park Corner, Hyde Park", "Hyde Park Corner, Hyde Park", 18186),
+    ("Black Lion Gate: Kensington Gardens", "Black Lion Gate: Kensington Gardens", 12373),
+    ("Albert Gate: Hyde Park", "Albert Gate: Hyde Park", 9831),
+    ("Speakers' Corner 1: Hyde Park", "Speakers' Corner 1: Hyde Park", 6234),
+    ("Speakers' Corner 2: Hyde Park", "Speakers' Corner 2: Hyde Park", 6017),
+    ("Palace Gate: Kensington Gardens", "Palace Gate: Kensington Gardens", 5208),
+    ("Hyde Park Corner, Hyde Park", "Albert Gate, Hyde Park", 4514),
+    ("Black Lion Gate, Kensington Gardens", "Palace Gate, Kensington Gardens", 4381),
+    ("Palace Gate, Kensington Gardens", "Black Lion Gate, Kensington Gardens", 3827),
+    ("Hyde Park Corner, Hyde Park", "Black Lion Gate, Kensington Gardens", 3617)
   )
 
   val expectedMostPopularWithAverageJourney = Array(
-    ("Hyde Park Corner, Hyde Park", "Hyde Park Corner, Hyde Park", 15070, 3241.57),
-    ("Black Lion Gate, Kensington Gardens", "Black Lion Gate, Kensington Gardens", 10836, 3115.84),
-    ("Albert Gate, Hyde Park", "Albert Gate, Hyde Park", 8312, 2661.46),
-    ("Speakers' Corner 1, Hyde Park", "Speakers' Corner 1, Hyde Park", 5211, 3515.57),
-    ("Speakers' Corner 2, Hyde Park", "Speakers' Corner 2, Hyde Park", 4965, 3339.95),
-    ("Palace Gate, Kensington Gardens", "Palace Gate, Kensington Gardens", 4561, 2772.79),
-    ("Hyde Park Corner, Hyde Park", "Albert Gate, Hyde Park", 3895, 2805.85),
-    ("Black Lion Gate, Kensington Gardens", "Palace Gate, Kensington Gardens", 3848, 1421.76),
-    ("Palace Gate, Kensington Gardens", "Black Lion Gate, Kensington Gardens", 3407, 1589.73),
-    ("Hyde Park Corner: Hyde Park", "Hyde Park Corner: Hyde Park", 3116, 3098.12)
+    ("Hyde Park Corner, Hyde Park", "Hyde Park Corner, Hyde Park", 18186, "3216.99"),
+    ("Black Lion Gate: Kensington Gardens", "Black Lion Gate: Kensington Gardens", 12373, "3103.88"),
+    ("Albert Gate: Hyde Park", "Albert Gate: Hyde Park", 9831, "2648.47"),
+    ("Speakers' Corner 1: Hyde Park", "Speakers' Corner 1: Hyde Park", 6234, "3408.83"),
+    ("Speakers' Corner 2: Hyde Park", "Speakers' Corner 2: Hyde Park", 6017, "3271.76"),
+    ("Palace Gate: Kensington Gardens", "Palace Gate: Kensington Gardens", 5208, "2765.30"),
+    ("Hyde Park Corner, Hyde Park", "Albert Gate, Hyde Park", 4514, "2790.35"),
+    ("Black Lion Gate, Kensington Gardens", "Palace Gate, Kensington Gardens", 4381, "1416.11"),
+    ("Palace Gate, Kensington Gardens", "Black Lion Gate, Kensington Gardens", 3827, "1567.37"),
+    ("Hyde Park Corner, Hyde Park", "Black Lion Gate, Kensington Gardens", 3617, "2332.55")
   )
 }

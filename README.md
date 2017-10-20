@@ -22,14 +22,22 @@ At the command line type:
 Together these commands build the jar and then execute the desired main
  class of that jar - through spark.
 
+#### Completing the tasks
+
+Make the RouteAnalysisTest suite pass!
+To run the test suite, use:
+
+```
+\> sbt
+...
+sbt:boris-bikes> test
+```
 
 ###### General hints and tips
 
 - Use the sbt shell for quick feedback
 - Use your IDE to explore the api
 - `df.show` and `df.printSchema` are your friends
-- Implement the following methods defined in `RouteAnalysis`
-- At the command line run `sbt` followed by `test` to check your results
 - Running `~testQuick` will rerun failing tests when a relevant code change
  is detected
 
@@ -45,8 +53,6 @@ Together these commands build the jar and then execute the desired main
     - check the api options of a Dataset
 
 3. mostPopularRoutesWithAverageJourneyTime
-    - you can use `<column>.cast("int")` in combination with
-    `dataset.withColumn` to create a new column cast to the desired type.
     - `import org.apache.spark.sql.functions._` to gain access to useful
     functions for DataFrames.
     - look at the docs for `spark.sql.functions.lit`

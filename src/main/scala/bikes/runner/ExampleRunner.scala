@@ -10,7 +10,7 @@ object ExampleRunner extends App {
     .appName("Boris Bikes")
     .getOrCreate()
 
-  RouteAnalysis.firstTenRows(spark)
+  RouteAnalysis.firstTenRows(spark).foreach(println)
 
   spark.stop()
 }
