@@ -9,10 +9,10 @@ object RouteAnalysis {
   def firstTenRows(spark: SparkSession): Array[String] = ???
 
   /**
-    * A route is described by the 'StartStation Name' to 'EndStation Name'.
+    * A route is described by: starting station to end station.
     * Consider the reverse route as distinct.
     *
-    * Result: The top 10 most popular routes, with the count:
+    * Result: The top 10 most popular routes together with the count of that route:
     * StartStation Name,  EndStation Name,  count
     */
   def tenMostPopularRoutes(spark: SparkSession): Array[(String, String, Long)] = ???
