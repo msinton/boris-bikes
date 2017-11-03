@@ -57,9 +57,9 @@ are **almost** exactly the same: (1) `/tmp/chessFlat` and (2) `/tmp/chess`
 
         chessDS.repartition($"move").write.parquet("/tmp/chess")
 
-4. Load the data from `/tmp/chessFlat`. This is the same data as in
-    `/tmp/chess`. Call a function to observe the partition size of the
-    underlying rdd. Compare this to that of `/tmp/chess`
+4. Load the data from `/tmp/chessFlat`. Call a function on the DataSet
+    api to observe the partition size of the underlying rdd.
+    Compare this to that of `/tmp/chess`
 
 5. Run the following to observe the physical partitioning that has been
     done. Do the same for `/tmp/chess` also.
@@ -67,4 +67,5 @@ are **almost** exactly the same: (1) `/tmp/chessFlat` and (2) `/tmp/chess`
          %sh
         hdfs dfs -ls /tmp/chessFlat
 
-6.
+6. Run `chess.MoveAnalysis.allMoveEvalPercents` on each version of the
+    data and compare the run times.
