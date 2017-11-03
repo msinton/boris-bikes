@@ -14,9 +14,16 @@ Move Sequences
 - copy and unzip `chess.zip` from
 `S:\Training\DataEngineering\datasets\chess` to: `boris-bikes\data`
 
+- Note, the cluster has the same chess data saved to `/tmp/chess`
+
 ###### General hints and tips
 
 - Use the functions from `performance.Benchmark`
+
+- Remember to clear the cache before executing a task
+    when comparing performance (where caching is involved).
+    Otherwise caching from a previous run
+    invalidates your performance comparison.
 
 #### Exercises
 
@@ -36,17 +43,16 @@ Additionally, the function executes for only one sequence length at a time.
 Therefore, to calculate the results for a number of different
 sequence lengths, the function needs to be re-executed a number of times.
 
-- Note, the cluster has the same chess data saved to `/tmp/chess`
-
 1. Create a runner and test the function works for a chosen sequence length,
     when submitted as a Spark job.
 
 2. Run this function with benchmarking for sequences of length 5 to 10,
     both locally and in the cluster. Compare the time taken.
-    - On the cluster the `spark` variable is already present.
+    - Note that on the cluster, the `spark` variable is already present.
 
 3. Improve the performance
     - A well placed `.cache` can do the trick
+    - remember to clear the cache for a valid comparison! See General hints.
 
 ###### Partitioning:
 
@@ -57,9 +63,9 @@ are **almost** exactly the same: (1) `/tmp/chessFlat` and (2) `/tmp/chess`
 
         chessDS.repartition($"move").write.parquet("/tmp/chess")
 
-4. Load the data from `/tmp/chessFlat`. Call a function on the DataSet
+4. Load the data from (1). Call a function on the DataSet
     api to observe the partition size of the underlying rdd.
-    Compare this to that of `/tmp/chess`
+    Compare this to that of (2)
 
 5. Run the following to observe the physical partitioning that has been
     done. Do the same for `/tmp/chess` also.
@@ -67,5 +73,9 @@ are **almost** exactly the same: (1) `/tmp/chessFlat` and (2) `/tmp/chess`
          %sh
         hdfs dfs -ls /tmp/chessFlat
 
-6. Run `chess.MoveAnalysis.allMoveEvalPercents` on each version of the
-    data and compare the run times.
+6. Run the provided function `chess.MoveAnalysis.allMoveEvalPercents`
+    on each version of the data and compare the run times. Look at what
+    the function is doing.
+
+7. Think about why there is a difference in performance on the 2 datasets
+    and discuss this with your mentor.
