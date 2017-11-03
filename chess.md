@@ -25,6 +25,9 @@ Move Sequences
     Otherwise caching from a previous run
     invalidates your performance comparison.
 
+- In Zeppelin copy over and execute `Evaluations` and `FlatGameData`
+    from the chess `package` object.
+
 #### Exercises
 
 We provide a function `Sequences.percentThatEndInMistake` that looks at
@@ -77,5 +80,6 @@ are **almost** exactly the same: (1) `/tmp/chessFlat` and (2) `/tmp/chess`
     on each version of the data and compare the run times. Look at what
     the function is doing.
 
-7. Think about why there is a difference in performance on the 2 datasets
-    and discuss this with your mentor.
+7. Think about why there is a difference in performance on the 2 datasets.
+
+8. Read [Repartitioning for performance](http://dev.sortable.com/spark-repartition/)

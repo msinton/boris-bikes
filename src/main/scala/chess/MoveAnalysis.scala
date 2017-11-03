@@ -18,6 +18,7 @@ object MoveAnalysis {
       .count
       .withColumn("evalSymbol", udf(Evaluations.valToName).apply($"evalSymbol"))
       .withColumn("percent", format_number($"count" / sum($"count").over(w) * 100, 3))
-      .sort("move")
+      .sort($"percent".desc)
+      .show
   }
 }
