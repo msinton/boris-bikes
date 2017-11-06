@@ -82,4 +82,9 @@ are **almost** exactly the same: (1) `/tmp/chessFlat` and (2) `/tmp/chess`
 
 7. Think about why there is a difference in performance on the 2 datasets.
 
-8. Read [Repartitioning for performance](http://dev.sortable.com/spark-repartition/)
+8. Read:
+    - [Repartitioning for performance - prime example](http://dev.sortable.com/spark-repartition/)
+    Note that you may find the example in this only applies when run locally and not on the cluster.
+    The example demonstrates the effect of multi-cores but does not take into account
+    distributed cores.
+    - [partitioning](http://parrotprediction.com/partitioning-in-apache-spark/)

@@ -11,13 +11,13 @@ object MoveAnalysis {
 
     import spark.implicits._
 
-    val w = Window.partitionBy("move").rangeBetween(Window.unboundedPreceding, Window.unboundedFollowing)
+    val windowByMove = Window.partitionBy("move").rangeBetween(Window.unboundedPreceding, Window.unboundedFollowing)
 
     chessDS.filter(_.n < withinMoveNum)
       .groupBy("move", "evalSymbol")
       .count
       .withColumn("evalSymbol", udf(Evaluations.valToName).apply($"evalSymbol"))
-      .withColumn("percent", format_number($"count" / sum($"count").over(w) * 100, 3))
+      .withColumn("percent", format_number($"count" / sum($"count").over(windowByMove) * 100, 3))
       .sort($"percent".desc)
       .show
   }

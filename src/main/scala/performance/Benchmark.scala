@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 
 object Benchmark {
 
-  def withoutWarmUp(f: => Unit): Unit = {
+  def run(f: => Unit): Unit = {
     val startTime = System.nanoTime
     f
     val endTime = System.nanoTime
@@ -13,6 +13,6 @@ object Benchmark {
 
   def withWarmUp(spark: SparkSession)(f: => Unit): Unit = {
     spark.range(1000L * 1000 * 1000).selectExpr("sum(id)").collect()
-    withoutWarmUp(f)
+    run(f)
   }
 }
