@@ -13,9 +13,9 @@ object MoveAnalysis {
 
     val windowByMove = Window.partitionBy("move").rangeBetween(Window.unboundedPreceding, Window.unboundedFollowing)
 
-    chessDS.filter(_.n < withinMoveNum)
-      .groupBy("move", "evalSymbol")
-      .count
+    chessDS.filter($"n" < withinMoveNum)
+      .groupBy($"move", $"evalSymbol")
+      .count()
       .withColumn("evalSymbol", udf(Evaluations.valToName).apply($"evalSymbol"))
       .withColumn("percent", format_number($"count" / sum($"count").over(windowByMove) * 100, 3))
       .sort($"percent".desc)

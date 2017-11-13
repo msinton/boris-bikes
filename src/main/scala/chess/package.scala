@@ -12,6 +12,6 @@ package object chess {
     val valToName: Map[Int, String] = (set map (e => (e.value, e.toString))).toMap
   }
 
-  case class FlatGameData(url: String, move: String, eval: String, evalSymbol: Int, n: Int)
+  final case class FlatGameData(url: String, move: String, eval: String, evalSymbol: Int, n: Int)
 
 }

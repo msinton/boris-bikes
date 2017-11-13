@@ -3,14 +3,18 @@ package bikes.runner
 import bikes.RouteAnalysis
 import org.apache.spark.sql.SparkSession
 
-object ExampleRunner extends App {
+object ExampleRunner {
 
-  val spark: SparkSession = SparkSession.builder
-    .master("local")
-    .appName("Boris Bikes")
-    .getOrCreate()
+  def main(args: Array[String]): Unit = {
 
-  RouteAnalysis.firstTenRows(spark).foreach(println)
+    val spark: SparkSession = SparkSession.builder
+      .master("local")
+      .appName("Boris Bikes")
+      .getOrCreate()
 
-  spark.stop()
+    RouteAnalysis.firstTenRows(spark).foreach(println)
+
+    spark.stop()
+  }
+
 }
