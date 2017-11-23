@@ -33,7 +33,7 @@ process through reusability and a smaller api/process to understand.
 ##### Input data flow diagram:
 - This describes only how input is **immediately** handled - before a query is run.
 
-![structured streaming stream as a table](.\images\structured-streaming-stream-as-a-table.png)
+![structured streaming stream as a table](./images/structured-streaming-stream-as-a-table.png)
 
 ## Output modes
 
@@ -43,7 +43,7 @@ depending on the query that is to be executed.
 In describing the modes, it is helpful to keep in mind the **Result Table**
 which are the results that will be written to the sink.
 
-![structured model](.\images\structured-model.png)
+![structured model](./images/structured-model.png)
 
 ### The Three Modes
 
@@ -78,7 +78,7 @@ See **Examples**
 
 The following table shows the query types that are possible in each mode.
 
-![spark stream modes](.\images\spark_stream_modes.png)
+![spark stream modes](./images/spark_stream_modes.png)
 
 ## Examples
 
@@ -91,7 +91,7 @@ opening or closing a mobile application
 - Red text shows changes to the result table
 - The batch is triggered every 2 seconds
 
-![Update-example](.\images\stream-example-update-mode1.png)
+![Update-example](./images/stream-example-update-mode1.png)
 
 #### Append mode
 
