@@ -127,8 +127,6 @@ which new data that would otherwise change a row is now ignored. To
 understand when this cut-off point will occur you need to consider the
 row's time window.
 
-See the [example](#append-mode-aggregation-with-watermark) for more.
-
 ##### Row can be written to Result Table when:
 
     row_window_end <= watermark
@@ -140,7 +138,9 @@ since *any new data* that has an *event-time* **within** the
 this appears to be wrong in suggesting the Result Table is updated one
 trigger *later* than should be possible.)
 
-#### Watermarking Notes and tips
+See the [example](#append-mode-aggregation-with-watermark) for more.
+
+#### Watermarking notes and tips
 
 - Aggregation must be done on the same timestamp column as is used for
 watermarking
