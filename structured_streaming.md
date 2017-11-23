@@ -81,8 +81,8 @@ The following table shows the query types that are possible in each mode.
 ## Watermarking
 
 Watermarking allows late data to be included in a windowed aggregation,
-while also providing a cut-off point at which point old state can be
-dropped as it is no longer required.
+while also providing a cut-off point after which **old state** can be
+**dropped** - as it is no longer required.
 
 This is done by tracking the most recent **event-time** *independently*
 from the **current system time**.
@@ -101,7 +101,7 @@ details to note.
 
 ##### watermark recalculation:
 
-**on** `current_system_time == window_start`,
+**when** `current_system_time == window_start`,
 
         watermark = max_event_time - late_threshold
 
@@ -124,18 +124,21 @@ of new data.
 
 With watermarking there becomes a point in time, a **cut-off point** after
 which new data that would otherwise change a row is now ignored. To
-understand when this cut-off point will occur you need to consider what
-time window the row falls into.
+understand when this cut-off point will occur you need to consider the
+row's time window.
+
+See the [example](#append-mode-aggregation-with-watermark) for more.
 
 ##### Row can be written to Result Table when:
 
     row_window_end <= watermark
 
-since any new data in the time window of the row will now be ignored.
+since *any new data* that has an *event-time* **within** the
+*row's time window* will now be ignored.
 
-Note that the diagram on the Spark programming guide that illustrates
-this appears to be wrong in suggesting the rows are written later than
-should be possible.
+(Note that the diagram on the Spark programming guide that illustrates
+this appears to be wrong in suggesting the Result Table is updated one
+trigger *later* than should be possible.)
 
 #### Watermarking Notes and tips
 
@@ -153,18 +156,18 @@ than anticipated.
 
 ## Examples
 
-#### Update mode
+#### Update mode aggregation with window
 
 - The following example is for Open/Close events that describe users
 opening or closing a mobile application
 - The aggregation window duration is 1 min
 - The query counts how many open/close events occurred within the time window
-- `Red text` shows changes to the result table
+- Red text shows changes to the result table
 - The batch is triggered every 2 seconds
 
 ![Update-example](./images/stream-example-update-mode1.png)
 
-#### Append mode
+#### Append mode aggregation with watermark
 
 Take the same scenario as described above. We need to create a cut-off
 point by when we can say *"there will be no more changes to these rows"*.
@@ -260,6 +263,6 @@ atomically. As is the case with the `mv` command.
 
 - de-duplication - this is the same as it is normally with static data,
 the difference here is that in order to perform de-duplication the relevant
-data needs to be held in state. Therefore watermarking can reduce what
+data needs to be held in state. Therefore, use watermarking to reduce what
 state is required. Usage: `.dropDuplicates("guid", "eventTime")`
 
