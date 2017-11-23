@@ -22,6 +22,7 @@ The **powerful** consequence of this is that the **same queries** can be applied
 to both streaming and static data - thereby accelerating the development
 process through reusability and a smaller api/process to understand.
 
+
 ## Input and output
 
 - input treated as an **Unbounded table** (i.e. infinite)
@@ -30,10 +31,11 @@ process through reusability and a smaller api/process to understand.
 - sink is one of: **file**, [foreach](#foreach-sink), **console** (for testing),
 **memory** (for testing)
 
-##### Input data flow diagram:
+#### Input data flow diagram:
 - This describes how input is **immediately** handled - before a query is run.
 
 ![structured streaming stream as a table](./images/structured-streaming-stream-as-a-table.png)
+
 
 ## Output modes
 
@@ -47,31 +49,26 @@ which are the results that will be written to the sink.
 
 ### The Three Modes
 
-##### Complete
+#### Complete
  - whole Result Table is output
  - can only be done with aggregation queries - since otherwise
  **all state** has to be maintained!
  - from the **sinks** perspective, can be thought of as re-writing the
  entire table of results after every trigger
 
-##### Update
+#### Update
  - only rows in the Result Table that are **new** or have **changed** are output
  - All query types supported, but requires the **sink** to handle
  *in place* updates
 
-##### Append
+#### Append
  - only the **new** rows added to the Result Table (since the last trigger)
  are output to the sink
  - only supports queries where the rows added to the Result Table are
   never going to change
- - with aggregation queries, this mode incurs a delay when compared to Update <sup>*</sup>
+ - with aggregation queries, this mode incurs a delay<sup>*</sup> when compared to *Update*
 
-<sup>*</sup> Due to the nature of appending, since rows can
-only be written to the Result Table (and therefore sink) after
-it is certain that no further modifications to each row are possible.
-When aggregating, this is ensured by watermarking - in short, creating a
-cut-off point for accepting new data into an aggregation time window.
-See [Examples](#examples)
+<sup>*</sup> See [Examples](#examples) and [Watermarking - append](#append-mode-delay)
 
 
 #### Supported query types
@@ -79,6 +76,80 @@ See [Examples](#examples)
 The following table shows the query types that are possible in each mode.
 
 ![spark stream modes](./images/spark_stream_modes.png)
+
+
+## Watermarking
+
+Watermarking allows late data to be included in a windowed aggregation,
+while also providing a cut-off point at which point old state can be
+dropped as it is no longer required.
+
+This is done by tracking the most recent **event-time** *independently*
+from the **current system time**.
+
+A threshold is set with
+`.withWatermark(<event-time-col>, <duration>)`
+e.g. `.withWatermark("timestamp", "10 minutes")`.
+
+To understand exactly how watermarking works in Spark there are a few key
+details to note.
+
+1. We set a `late_threshold` = some amount of time
+1. The `watermark` is **recalculated** at each point that the
+`current_system_time` progresses to the **start of the next window**.
+1. Spark keeps track of the `max_event_time` **seen** in the stream so far
+
+##### watermark recalculation:
+
+**on** `current_system_time == window_start`,
+
+        watermark = max_event_time - late_threshold
+
+-----
+
+#### Append mode delay
+
+When using the append mode and watermarking there is a necessary delay
+in seeing output - in comparison to the Update mode.
+
+This is due to the nature of appending, since a row can
+only be written to the Result Table (and therefore sink) after
+it is certain that *no further modifications* to that row are *possible*.
+
+When aggregating with Append mode, it is **not possible** to do **plain
+aggregation** since we would never be allowed to write to the
+Result Table (unless the stream is complete!). We need a mechanism for
+being able to certify that a row is not going to change as the result
+of new data.
+
+With watermarking there becomes a point in time, a **cut-off point** after
+which new data that would otherwise change a row is now ignored. To
+understand when this cut-off point will occur you need to consider what
+time window the row falls into.
+
+##### Row can be written to Result Table when:
+
+    row_window_end <= watermark
+
+since any new data in the time window of the row will now be ignored.
+
+Note that the diagram on the Spark programming guide that illustrates
+this appears to be wrong in suggesting the rows are written later than
+should be possible.
+
+#### Watermarking Notes and tips
+
+- Aggregation must be done on the same timestamp column as is used for
+watermarking
+
+- `.withWatermark` must be called **before** doing the aggregation
+
+- events *ahead of the current time* will push forward the watermark.
+Consider the case where it is possible to receive events with inaccurate
+event times (e.g. a mobile device providing its own timestamp - with incorrect system time)
+then your watermark could become much more restrictive (a tighter cut-off)
+than anticipated.
+
 
 ## Examples
 
@@ -88,7 +159,7 @@ The following table shows the query types that are possible in each mode.
 opening or closing a mobile application
 - The aggregation window duration is 1 min
 - The query counts how many open/close events occurred within the time window
-- <span style="color:red">Red text</span> shows changes to the result table
+- `Red text` shows changes to the result table
 - The batch is triggered every 2 seconds
 
 ![Update-example](./images/stream-example-update-mode1.png)
@@ -118,36 +189,6 @@ update our results... It's as if we didn't see this event at all.
 
 At `11am` the state for all events between `8` and `9` can be cleared.
 
-## Watermarking
-
-Watermarking allows late data to be included in a windowed aggregation
-while also providing a cut-off point at which point old state can be
-dropped as it is no longer required.
-
-This is done by tracking the most recent **event-time** (independently from
-the system current time).
-
-A threshold is set with
-`.withWatermark(<event-time-col>, <duration>)`
-e.g. `.withWatermark("timestamp", "10 minutes")`.
-
-Watermarking behaves slightly differently in different modes
-
-TODO
-
-
-
-- Aggregation must be done on the same timestamp column as is used for
-watermarking
-
-- `.withWatermark` must be called **before** doing the aggregation
-
-- events *ahead of the current time* will push forward the watermark.
-Consider the case where it is possible to receive events with inaccurate
-event times (e.g. a mobile device providing its own timestamp - with incorrect system time)
-then your watermark could become much more restrictive (a tighter cut-off)
-than anticipated.
-
 
 ## Restrictions
 
@@ -173,6 +214,7 @@ by setting:
 
         spark.sql.streaming.schemaInference = true
 
+
 ## mapGroupsWithState and flatMapGroupsWithState
 
 These query types are used for doing **arbitrary stateful operations**.
@@ -197,6 +239,7 @@ It must be:
 - implement `open`, `process`, `close`
 - in `open`, the batch **version** and **partition** numbers identify
 the set of rows and can be used to choose whether or not to write the rows.
+
 
 ## Misc Considerations/ guidelines
 

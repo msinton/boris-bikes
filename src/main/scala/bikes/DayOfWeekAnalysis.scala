@@ -1,0 +1,5 @@
+package bikes
+
+object DayOfWeekAnalysis {
+
+}
