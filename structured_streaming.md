@@ -1,21 +1,21 @@
 # Structured Streaming
 
-**Structured Streaming** is Sparks new version of Streaming processing.
+**Structured Streaming** is Sparks new version of Stream processing.
 Not to be confused with the old *Spark Streaming* which used a
 "discretized stream or DStream".
 
 [Spark Api guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)
 
-- Not true streaming<sup>true streaming</sup>
+- Not true streaming<sup>*</sup>
 - Micro batching
 - Uses DataFrame APIs.
 
-<sup>true streaming</sup> True stream processing would handle each
+<sup>*</sup> True stream processing would handle each
 input item individually.
 
 ### Why micro batching?
 
-Micro batching enables processing to be done in almost <sup>see restrictions</sup> the same way
+Micro batching enables processing to be done in almost (see [restrictions](#restrictions)) the same way
 that it would be done with static data.
 
 The **powerful** consequence of this is that the **same queries** can be applied
@@ -27,11 +27,11 @@ process through reusability and a smaller api/process to understand.
 - input treated as an **Unbounded table** (i.e. infinite)
 - output to a **Result Table** which is consumed by a **sink**
 - source is one of: **files**, **Kafka**, **socket** (for testing)
-- sink is one of: **file**, **foreach** <sup>see later</sup>, **console** (for testing),
+- sink is one of: **file**, [foreach](#foreach-sink), **console** (for testing),
 **memory** (for testing)
 
 ##### Input data flow diagram:
-- This describes only how input is **immediately** handled - before a query is run.
+- This describes how input is **immediately** handled - before a query is run.
 
 ![structured streaming stream as a table](./images/structured-streaming-stream-as-a-table.png)
 
@@ -64,14 +64,14 @@ which are the results that will be written to the sink.
  are output to the sink
  - only supports queries where the rows added to the Result Table are
   never going to change
- - with aggregation queries, this mode incurs a delay when compared to Update <sup>Append delay</sup>
+ - with aggregation queries, this mode incurs a delay when compared to Update <sup>*</sup>
 
-<sup>Append delay</sup> Due to the nature of appending, since rows can
+<sup>*</sup> Due to the nature of appending, since rows can
 only be written to the Result Table (and therefore sink) after
 it is certain that no further modifications to each row are possible.
 When aggregating, this is ensured by watermarking - in short, creating a
 cut-off point for accepting new data into an aggregation time window.
-See **Examples**
+See [Examples](#examples)
 
 
 #### Supported query types
@@ -88,7 +88,7 @@ The following table shows the query types that are possible in each mode.
 opening or closing a mobile application
 - The aggregation window duration is 1 min
 - The query counts how many open/close events occurred within the time window
-- Red text shows changes to the result table
+- <span style="color:red">Red text</span> shows changes to the result table
 - The batch is triggered every 2 seconds
 
 ![Update-example](./images/stream-example-update-mode1.png)
@@ -103,20 +103,20 @@ stop updating our state and that we can commit to the Result Table?
 By using watermarking we define a cut-off point in real time, after which
 we will ignore late data.
 
-For example, take a window of time for events between 8am and 9am.
-If we say that we will stop accepting late data at 11am, then when it
+For example, take a window of time for events between `8am` and `9am`.
+If we say that we will stop accepting late data at `11am`, then when it
 gets to 11am we output all the new rows that were formed from open/close
-events that had an event-time between 8am and 9am.
+events that had an event-time between `8am` and `9am`.
 
-Output written at 11am:
+Output written at `11am`:
 
         open    8:00    21
         close   8:00    17
 
-At 11:01 we get another event: "phone 42, 8:59, close" - but we don't
-update our results, its as if we didn't see this event at all.
+At `11:01` we get another event: `phone 42, 8:59, close` - but we don't
+update our results... It's as if we didn't see this event at all.
 
-At 11am the state for all events between 8 and 9 can be cleared.
+At `11am` the state for all events between `8` and `9` can be cleared.
 
 ## Watermarking
 
@@ -155,7 +155,7 @@ than anticipated.
 query, e.g `.agg(..).agg(..)`
 
 - Can't use: `count`, `foreach`, `show` operations
-that would normally force computation of a result
+when they would normally force computation of a result
 
 - `limit`, `take` unsupported
 
@@ -169,7 +169,9 @@ in the described scenario)
 
 - With a **file source** a schema is required.
 However, for ad-hoc use cases, you can re-enable schema inference
-by `setting spark.sql.streaming.schemaInference` to `true`
+by setting:
+
+        spark.sql.streaming.schemaInference = true
 
 ## mapGroupsWithState and flatMapGroupsWithState
 
@@ -179,22 +181,22 @@ Often for session-related data there is a need to save arbitrary types
 of data as state, and perform arbitrary operations on that state.
 Both operations allow you to apply user-defined code on grouped Datasets
 to update user-defined state. For more see the [API docs](https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.streaming.GroupState)
-and [examples](https://github.com/apache/spark/blob/v2.2.0/examples/src/main/scala/org/apache/spark/examples/sql/streaming/StructuredSessionization.scala)
+and [spark's examples](https://github.com/apache/spark/blob/v2.2.0/examples/src/main/scala/org/apache/spark/examples/sql/streaming/StructuredSessionization.scala)
 
 
-## ForEach sink
+## foreach sink
 
-The foreach operation allows arbitrary operations to be computed on the
+The `foreach` operation allows arbitrary operations to be computed on the
 output data.
 
-You have to implement the interface ForeachWriter. It processes the new
+You have to implement the interface `ForeachWriter`. It processes the new
 output from the Result Table on each trigger.
 
 It must be:
 - serializable
 - implement `open`, `process`, `close`
-- in `open`, the batch **version** and **partition** numbers identify the set of rows
-and can be used to choose whether or not to write the rows.
+- in `open`, the batch **version** and **partition** numbers identify
+the set of rows and can be used to choose whether or not to write the rows.
 
 ## Misc Considerations/ guidelines
 
