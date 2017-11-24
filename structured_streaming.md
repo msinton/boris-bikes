@@ -135,8 +135,8 @@ since *any new data* that has an *event-time* **within** the
 *row's time window* will now be ignored.
 
 (Note that the diagram on the Spark programming guide that illustrates
-this appears to be wrong in suggesting the Result Table is updated one
-trigger *later* than should be possible.)
+that the Result Table is updated one trigger *later* than should be
+possible. On experimenting, there is )
 
 See the [example](#append-mode-aggregation-with-watermark) for more.
 
@@ -169,17 +169,18 @@ opening or closing a mobile application
 
 #### Append mode aggregation with watermark
 
-Take the same scenario as described above. We need to create a cut-off
-point by when we can say *"there will be no more changes to these rows"*.
-To do that we have to aggregate our events into time windows, but that is
+Take the same scenario as described above. In order to **append** we need
+to create a cut-off point by when we can say
+*"there will be no more changes to these rows"*.
+To do that we have to aggregate our events into time windows, but that alone is
 not enough because there can always be late data, so how do we know when to
-stop updating our state and that we can commit to the Result Table?
-By using watermarking we define a cut-off point in real time, after which
-we will ignore late data.
+**stop** updating our **state** and therefore commit to the Result Table?
+By using watermarking we define a cut-off point against event-time,
+after which we will ignore late data.
 
 For example, take a window of time for events between `8am` and `9am`.
 If we say that we will stop accepting late data at `11am`, then when it
-gets to 11am we output all the new rows that were formed from open/close
+gets to 11am we output all the new rows that were formed from `open`/`close`
 events that had an event-time between `8am` and `9am`.
 
 Output written at `11am`:
